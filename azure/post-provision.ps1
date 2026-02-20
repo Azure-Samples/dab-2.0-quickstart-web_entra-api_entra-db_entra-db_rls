@@ -19,7 +19,7 @@ $dabFqdn           = $env:AZURE_CONTAINER_APP_API_FQDN
 $token             = $env:AZURE_RESOURCE_TOKEN
 $clientId          = $env:AZURE_CLIENT_ID
 
-$sqlConn = "Server=tcp:$sqlServerFqdn,1433;Database=$sqlDb;User Id=$sqlAdminUser;Password=$sqlAdminPassword;Encrypt=true;TrustServerCertificate=false"
+$sqlConn = "Server=tcp:$sqlServerFqdn,1433;Database=$sqlDb;User Id=$sqlAdminUser;Password=$sqlAdminPassword;Encrypt=true;TrustServerCertificate=true"
 
 # Ensure SqlServer module (Invoke-Sqlcmd) is available
 if (-not (Get-Module -ListAvailable -Name SqlServer)) {

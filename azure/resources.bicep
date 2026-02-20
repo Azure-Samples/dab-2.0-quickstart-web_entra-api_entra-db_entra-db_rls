@@ -67,10 +67,10 @@ resource cae 'Microsoft.App/managedEnvironments@2024-03-01' = {
 // ──────────────────────────────────────
 
 // SQL Auth connection string — used by SQL Commander (no SAMI)
-var sqlConnString = 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Database=sql-db;User Id=${sqlAdminUser};Password=${sqlAdminPassword};Encrypt=true;TrustServerCertificate=false'
+var sqlConnString = 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Database=sql-db;User Id=${sqlAdminUser};Password=${sqlAdminPassword};Encrypt=true;TrustServerCertificate=true'
 
 // Managed Identity connection string — used by DAB
-var sqlMiConnString = 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Database=sql-db;Authentication=Active Directory Managed Identity;Encrypt=true;TrustServerCertificate=false'
+var sqlMiConnString = 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Database=sql-db;Authentication=Active Directory Managed Identity;Encrypt=true;TrustServerCertificate=true'
 
 resource dabApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: 'data-api-${resourceToken}'
