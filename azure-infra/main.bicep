@@ -55,3 +55,5 @@ output AZURE_CONTAINER_APP_API_NAME string = resources.outputs.dabAppName
 output AZURE_CONTAINER_APP_API_PRINCIPAL_ID string = resources.outputs.dabAppPrincipalId
 output AZURE_CONTAINER_APP_API_FQDN string = resources.outputs.dabFqdn
 output AZURE_CONTAINER_APP_SQLCMDR_FQDN string = resources.outputs.sqlCmdrFqdn
+output AZURE_MCP_INSPECTOR_NAME string = resources.outputs.mcpInspectorName
+output AZURE_MCP_INSPECTOR_FQDN string = resources.outputs.mcpInspectorFqdn

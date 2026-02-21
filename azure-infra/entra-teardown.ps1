@@ -55,9 +55,9 @@ const CONFIG = {
     apiUrlLocal: 'http://localhost:5000',
     apiUrlAzure: '__API_URL_AZURE__'
 };
-"@ | Out-File -FilePath "$repoRoot/web/config.js" -Encoding utf8 -Force
+"@ | Out-File -FilePath "$repoRoot/web-app/config.js" -Encoding utf8 -Force
 
-Push-Location "$repoRoot/api"
+Push-Location "$repoRoot/data-api"
 dab configure `
     --runtime.host.authentication.provider "EntraId" `
     --runtime.host.authentication.jwt.audience "__AUDIENCE__" `

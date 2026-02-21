@@ -124,7 +124,7 @@ if ($isAzd) {
 # ── 2. Update dab-config.json with real auth values ──
 
 Write-Host "Updating DAB config with EntraId auth..." -ForegroundColor Yellow
-Push-Location "$repoRoot/api"
+Push-Location "$repoRoot/data-api"
 dab configure `
     --runtime.host.authentication.provider "EntraId" `
     --runtime.host.authentication.jwt.audience "$($app.appId)" `
@@ -142,7 +142,7 @@ const CONFIG = {
     apiUrlAzure: '__API_URL_AZURE__'
 };
 "@
-$configContent | Out-File -FilePath "$repoRoot/web/config.js" -Encoding utf8 -Force
+$configContent | Out-File -FilePath "$repoRoot/web-app/config.js" -Encoding utf8 -Force
 Write-Host "config.js updated" -ForegroundColor Green
 
 # ── 4. Test user (idempotent) ──
@@ -206,13 +206,13 @@ Write-Host "Role assigned: sample-role-1" -ForegroundColor Green
 # ── 6. Verify config files were updated ──
 
 $failed = @()
-$configJsContent = Get-Content "$repoRoot/web/config.js" -Raw
+$configJsContent = Get-Content "$repoRoot/web-app/config.js" -Raw
 if ($configJsContent -match '__CLIENT_ID__|__TENANT_ID__') {
-    $failed += "web/config.js still contains placeholders"
+    $failed += "web-app/config.js still contains placeholders"
 }
-$dabConfigContent = Get-Content "$repoRoot/api/dab-config.json" -Raw
+$dabConfigContent = Get-Content "$repoRoot/data-api/dab-config.json" -Raw
 if ($dabConfigContent -match '__AUDIENCE__|__ISSUER__') {
-    $failed += "api/dab-config.json still contains placeholders"
+    $failed += "data-api/dab-config.json still contains placeholders"
 }
 if ($failed.Count -gt 0) {
     foreach ($f in $failed) { Write-Host "✗ $f" -ForegroundColor Red }

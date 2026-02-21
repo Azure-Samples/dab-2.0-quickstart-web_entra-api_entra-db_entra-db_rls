@@ -187,6 +187,50 @@ resource webApp 'Microsoft.App/containerApps@2024-03-01' = {
 }
 
 // ──────────────────────────────────────
+// MCP Inspector Container App
+// ──────────────────────────────────────
+
+resource mcpInspector 'Microsoft.App/containerApps@2024-03-01' = {
+  name: 'mcp-inspector-${resourceToken}'
+  location: location
+  tags: tags
+  properties: {
+    managedEnvironmentId: cae.id
+    configuration: {
+      ingress: {
+        external: true
+        targetPort: 80
+      }
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
+      secrets: [
+        { name: 'acr-password', value: acr.listCredentials().passwords[0].value }
+      ]
+    }
+    template: {
+      containers: [
+        {
+          name: 'mcp-inspector'
+          image: 'docker.io/library/nginx:alpine'
+          resources: { cpu: json('0.25'), memory: '0.5Gi' }
+          env: [
+            { name: 'DANGEROUSLY_OMIT_AUTH', value: 'true' }
+            { name: 'MCP_SERVER_URL', value: 'https://${dabApp.properties.configuration.ingress.fqdn}/mcp' }
+            { name: 'ALLOWED_ORIGINS', value: '*' }
+          ]
+        }
+      ]
+      scale: { minReplicas: 0, maxReplicas: 1 }
+    }
+  }
+}
+
+// ──────────────────────────────────────
 // Outputs
 // ──────────────────────────────────────
 
@@ -200,3 +244,5 @@ output dabFqdn string = dabApp.properties.configuration.ingress.fqdn
 output sqlCmdrFqdn string = sqlCmdr.properties.configuration.ingress.fqdn
 output webAppName string = webApp.name
 output webAppFqdn string = webApp.properties.configuration.ingress.fqdn
+output mcpInspectorName string = mcpInspector.name
+output mcpInspectorFqdn string = mcpInspector.properties.configuration.ingress.fqdn

@@ -6,7 +6,7 @@ metadata:
 
 infra:
   provider: bicep
-  path: azure
+  path: azure-infra
   module: main
 
 hooks:
@@ -14,14 +14,14 @@ hooks:
     shell: pwsh
     continueOnError: false
     interactive: true
-    run: ./azure/entra-setup.ps1
+    run: ./azure-infra/entra-setup.ps1
   postprovision:
     shell: pwsh
     continueOnError: false
     interactive: true
-    run: ./azure/post-provision.ps1
+    run: ./azure-infra/post-provision.ps1
   postdown:
     shell: pwsh
     continueOnError: true
     interactive: true
-    run: ./azure/entra-teardown.ps1
+    run: ./azure-infra/entra-teardown.ps1

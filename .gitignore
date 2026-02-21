@@ -2,8 +2,9 @@
 .azure-env
 .azure/
 dab-config.*.json
-bin/
-obj/
+**/bin
+**/obj
 node_modules/
 web-deploy-temp/
 web-deploy.zip
+api-deploy-temp/
