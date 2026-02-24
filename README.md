@@ -69,11 +69,16 @@ On first run, Aspire detects Entra ID isn't configured and walks you through set
 ## Deploy to Azure
 
 ```bash
-azd auth login
-azd up
+pwsh ./azure-infra/azure-up.ps1
 ```
 
-The `preprovision` hook runs `entra-setup.ps1` automatically. After teardown, `azd down` runs `entra-teardown.ps1` to delete the app registration.
+The `preprovision` hook runs `entra-setup.ps1` automatically. During teardown via `azure-down.ps1`, the `postdown` hook runs `entra-teardown.ps1` to delete the app registration.
+
+To tear down resources:
+
+```bash
+pwsh ./azure-infra/azure-down.ps1
+```
 
 ## The RLS Policy
 

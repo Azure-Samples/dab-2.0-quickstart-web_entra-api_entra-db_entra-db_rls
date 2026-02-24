@@ -22,6 +22,11 @@ $inspectorFqdn     = $env:AZURE_MCP_INSPECTOR_FQDN
 $token             = $env:AZURE_RESOURCE_TOKEN
 $clientId          = $env:AZURE_CLIENT_ID
 
+$quickstartRoot    = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$repoRoot          = (Resolve-Path (Join-Path $quickstartRoot "..")).Path
+$githubDir         = Join-Path $repoRoot ".github"
+$mcpConfigPath     = Join-Path $githubDir "mcp.json"
+
 $sqlConn = "Server=tcp:$sqlServerFqdn,1433;Database=$sqlDb;User Id=$sqlAdminUser;Password=$sqlAdminPassword;Encrypt=true;TrustServerCertificate=true"
 
 # ── 1. Open SQL firewall for local machine ──
@@ -179,6 +184,34 @@ az containerapp update `
     --resource-group $resourceGroup `
     --image "$acrName.azurecr.io/mcp-inspector:latest" | Out-Null
 Write-Host "MCP Inspector updated" -ForegroundColor Green
+
+# ── 10b. Upsert repo-root MCP config for quickstart5 ──
+
+Write-Host "Upserting repo-root MCP config entry for quickstart5..." -ForegroundColor Yellow
+if (-not (Test-Path $githubDir)) {
+    New-Item -ItemType Directory -Path $githubDir -Force | Out-Null
+}
+
+$mcpConfig = @{}
+if (Test-Path $mcpConfigPath) {
+    $mcpRaw = Get-Content $mcpConfigPath -Raw
+    if (-not [string]::IsNullOrWhiteSpace($mcpRaw)) {
+        $mcpConfig = $mcpRaw | ConvertFrom-Json -AsHashtable
+    }
+}
+
+if (-not $mcpConfig) { $mcpConfig = @{} }
+if (-not $mcpConfig.ContainsKey('servers') -or -not ($mcpConfig['servers'] -is [hashtable])) {
+    $mcpConfig['servers'] = @{}
+}
+
+$mcpConfig['servers']['azure-sql-mcp-qs5'] = @{
+    type = 'http'
+    url = "https://$dabFqdn/mcp"
+}
+
+$mcpConfig | ConvertTo-Json -Depth 100 | Out-File -FilePath $mcpConfigPath -Encoding utf8 -Force
+Write-Host "MCP config updated: azure-sql-mcp-qs5 -> https://$dabFqdn/mcp" -ForegroundColor Green
 
 # ── 11. Update local config.js for dev ──
 

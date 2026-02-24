@@ -1,5 +1,5 @@
 # Provision and deploy this quickstart to Azure
-# Usage: .\aspire-up.ps1 [-SkipLogin]
+# Usage: .\azure-up.ps1 [-SkipLogin]
 
 Param(
     [switch]$SkipLogin

@@ -8,13 +8,20 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
+@minLength(1)
+@description('Owner alias for resource tagging')
+param ownerAlias string
+
 @secure()
 @description('SQL Server administrator password')
 param sqlAdminPassword string
 
 param sqlAdminUser string = 'sqladmin'
 
-var tags = { 'azd-env-name': environmentName }
+var tags = {
+  'azd-env-name': environmentName
+  owner: ownerAlias
+}
 
 @description('Token suffix for resource names (set by entra-setup.ps1, falls back to uniqueString)')
 param resourceToken string = ''

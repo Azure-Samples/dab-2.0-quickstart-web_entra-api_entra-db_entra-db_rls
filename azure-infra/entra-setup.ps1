@@ -16,14 +16,23 @@ if (Test-Path $azureEnvFile) {
         $envData[$parts[0].Trim()] = $parts[1].Trim()
     }
     $token = $envData['token']
-    Write-Host "Using existing token: $token" -ForegroundColor Gray
+    if ($token -match '^\d{12}$') {
+        Write-Host "Using existing token: $token" -ForegroundColor Gray
+    } else {
+        $token = (Get-Date).ToUniversalTime().ToString('yyyyMMddHHmm')
+        Write-Host "Existing token invalid format; generated UTC token: $token" -ForegroundColor Yellow
+    }
 } else {
     $token = (Get-Date).ToUniversalTime().ToString('yyyyMMddHHmm')
     Write-Host "Generated token: $token" -ForegroundColor Green
 }
 
+$signedInUserName = az account show --query 'user.name' -o tsv
+$ownerAlias = if ($signedInUserName -and $signedInUserName.Contains('@')) { $signedInUserName.Split('@')[0] } else { $signedInUserName }
+
 if ($isAzd) {
     azd env set AZURE_RESOURCE_TOKEN $token
+    azd env set AZURE_OWNER_ALIAS $ownerAlias
 }
 
 $appName = "app-$token"
